@@ -17,13 +17,17 @@ class OpenGraph
     @metadata = {}
     parse_opengraph(options)
     load_fallback if fallback
-    check_images_path
+    check_images_path unless html_source?
   end
 
   private
+  def html_source?
+    @src.include? '</html>'
+  end
+
   def parse_opengraph(options = {})
     begin
-      if @src.include? '</html>'
+      if html_source?
         @body = @src
       else
         @body = RedirectFollower.new(@src, options).resolve.body
