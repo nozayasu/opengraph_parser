@@ -22,7 +22,7 @@ class OpenGraph
 
   private
   def html_source?
-    @src.include? '</html>'
+    @src.match(/<\/html>/i)
   end
 
   def parse_opengraph(options = {})

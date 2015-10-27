@@ -101,17 +101,36 @@ describe OpenGraph do
     end
 
     context "with body" do
-      it "should parse body instead of downloading it" do
-        content = File.read("#{File.dirname(__FILE__)}/../view/opengraph.html")
+      before do
         RedirectFollower.should_not_receive(:new)
+      end
 
-        og = OpenGraph.new(content)
-        og.src.should == content
-        og.title.should == "OpenGraph Title"
-        og.type.should == "article"
-        og.url.should == "http://test.host"
-        og.description.should == "My OpenGraph sample site for Rspec"
-        og.images.should == ["http://test.host/images/rock1.jpg", "/images/rock2.jpg"]
+      context "use uppercase tag" do
+        let(:content) { File.read("#{File.dirname(__FILE__)}/../view/opengraph.html").gsub(/<\/html>/, "</HTML>") }
+
+        it "should parse body instead of downloading it" do
+          og = OpenGraph.new(content)
+          og.src.should == content
+          og.title.should == "OpenGraph Title"
+          og.type.should == "article"
+          og.url.should == "http://test.host"
+          og.description.should == "My OpenGraph sample site for Rspec"
+          og.images.should == ["http://test.host/images/rock1.jpg", "/images/rock2.jpg"]
+        end
+      end
+
+      context "use lowercase tag" do
+        let(:content) { File.read("#{File.dirname(__FILE__)}/../view/opengraph.html") }
+
+        it "should parse body instead of downloading it" do
+          og = OpenGraph.new(content)
+          og.src.should == content
+          og.title.should == "OpenGraph Title"
+          og.type.should == "article"
+          og.url.should == "http://test.host"
+          og.description.should == "My OpenGraph sample site for Rspec"
+          og.images.should == ["http://test.host/images/rock1.jpg", "/images/rock2.jpg"]
+        end
       end
     end
   end
